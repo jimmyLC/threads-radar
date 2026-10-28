@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% macro card(p) %}
+<article class="card">
+  <div class="meta">
+    <time>{{ p.time_str }}</time>
+    <span class="author">{{ p.author }}</span>
+    {% if p.is_top %}<span class="badge top">熱門</span>{% endif %}
+    {% if p.is_reply %}<span class="badge reply">回覆</span>{% endif %}
+    <a class="link" href="{{ p.permalink }}" target="_blank" rel="noopener">原文 ↗</a>
+  </div>
+  <div class="text">{{ p.text }}</div>
+  {% if p.summary %}<div class="summary">{{ p.summary }}</div>{% endif %}
+</article>
+{% endmacro %}
+
+{% block sidebar %}
+<form class="search" method="get" action="/">
+  <input type="search" name="q" value="{{ q or '' }}" placeholder="全文搜尋…" aria-label="全文搜尋">
+</form>
+<nav>
+  <a href="/?date={{ d }}" class="{{ 'active' if not keyword and not q }}">
+    <span>全部</span><span class="n">{{ all_count }}</span>
+  </a>
+  {% for k in keywords %}
+  <div class="kwitem">
+    <a href="/?keyword={{ k.term | urlencode }}&date={{ d }}" class="{{ 'active' if keyword == k.term }}">
+      <span>{{ k.term }}</span><span class="n">{{ k.n }}</span>
+    </a>
+    <button class="delkw" data-term="{{ k.term }}" title="刪除「{{ k.term }}」" aria-label="刪除 {{ k.term }}">✕</button>
+  </div>
+  {% endfor %}
+</nav>
+<form class="addkw" id="addkw-form">
+  <input type="text" id="addkw-input" maxlength="60" placeholder="輸入新關鍵字…" aria-label="新增關鍵字">
+  <button type="submit" id="addkw-btn">＋ 新增</button>
+</form>
+<p class="hint">新增後會立即搜尋最近 24 小時的公開討論</p>
+{% endblock %}
+
+{% block content %}
+{% if q %}
+  <h1>搜尋「{{ q }}」<span class="total">共 {{ total }} 筆（最多顯示 50）</span></h1>
+  <p><a href="/?date={{ d }}">← 清除搜尋，回到日期瀏覽</a></p>
+  {% for p in posts %}{{ card(p) }}{% else %}<div class="empty">沒有符合的貼文</div>{% endfor %}
+{% else %}
+  <div class="days">
+    <a href="/?{{ prev_qs }}" aria-label="前一天">‹</a>
+    {% for day in days %}
+    <a href="/?{{ day.qs }}" class="{{ 'active' if day.ds == d }}">{{ day.label }}</a>
+    {% endfor %}
+    <a href="/?{{ next_qs }}" class="{{ 'disabled' if d >= today }}" aria-label="後一天">›</a>
+  </div>
+
+  <h1>
+    {% if keyword %}{{ keyword }}{% else %}全部關鍵字{% endif %}
+    · {{ d }}
+    <span class="total">共 {{ total }} 則</span>
+  </h1>
+
+  {% if top_posts %}
+  <h2>🔥 熱門（Meta 排序，非按讚數）</h2>
+  {% for p in top_posts %}{{ card(p) }}{% endfor %}
+  {% endif %}
+
+  <h2>🆕 最新</h2>
+  {% for p in posts %}{{ card(p) }}{% else %}<div class="empty">這天沒有抓到貼文</div>{% endfor %}
+
+  {% if not show_all and total > posts | length %}
+  <a class="more" href="?{% if keyword %}keyword={{ keyword | urlencode }}&{% endif %}date={{ d }}&all=1">顯示當日全部 {{ total }} 則</a>
+  {% endif %}
+{% endif %}
+{% endblock %}

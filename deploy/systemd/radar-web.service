@@ -1,0 +1,18 @@
+[Unit]
+Description=Threads Radar web UI
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+WorkingDirectory=/opt/radar
+EnvironmentFile=/opt/radar/.env
+Environment=RADAR_DB=/opt/radar/data/radar.db
+Environment=RADAR_CONFIG_DIR=/opt/radar/config
+Environment=WEB_HOST=127.0.0.1
+Environment=WEB_PORT=8000
+ExecStart=/opt/radar/.venv/bin/python -m radar.web
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

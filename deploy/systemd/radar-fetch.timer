@@ -1,0 +1,12 @@
+[Unit]
+Description=Run radar-fetch daily at 09:00 Taipei time
+
+[Timer]
+# 伺服器時區需設為 Asia/Taipei（install.sh 會處理）；若時區不是台北，
+# 可改成明確時區寫法：OnCalendar=*-*-* 09:00:00 Asia/Taipei
+OnCalendar=*-*-* 09:00:00
+Persistent=true
+Unit=radar-fetch.service
+
+[Install]
+WantedBy=timers.target

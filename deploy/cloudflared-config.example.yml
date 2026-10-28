@@ -1,0 +1,8 @@
+# cloudflared 設定：tunnel radar → 本機 8000
+# 放到 /root/.cloudflared/config.yml，記得換 tunnel id
+tunnel: <TUNNEL-ID>
+credentials-file: /root/.cloudflared/<TUNNEL-ID>.json
+ingress:
+  - hostname: threads.jimmy-tools.com
+    service: http://localhost:8000
+  - service: http_status:404

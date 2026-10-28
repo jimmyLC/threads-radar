@@ -1,0 +1,10 @@
+[Unit]
+Description=Run radar-refresh weekly (Mon 04:00)
+
+[Timer]
+OnCalendar=Mon *-*-* 04:00:00
+Persistent=true
+Unit=radar-refresh.service
+
+[Install]
+WantedBy=timers.target

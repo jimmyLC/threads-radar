@@ -1,0 +1,9 @@
+# 命中任一詞的貼文直接丟棄（不分大小寫、比對時會忽略空格）
+exclusions:
+  - Adobe Illustrator
+  - AI 檔
+  - American Idol
+  - .ai 網域
+  - .ai 網址
+  - .ai 域名
+  - .ai 網站
